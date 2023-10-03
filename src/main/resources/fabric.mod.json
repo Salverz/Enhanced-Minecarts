@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "enhanced-minecarts",
+	"version": "${version}",
+	"name": "Enhanced Minecarts",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/enhanced-minecarts/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"salverz.enhancedminecarts.EnhancedMinecarts"
+		],
+		"client": [
+			"salverz.enhancedminecarts.EnhancedMinecartsClient"
+		]
+	},
+	"mixins": [
+		"enhanced-minecarts.mixins.json",
+		{
+			"config": "enhanced-minecarts.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.14.22",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
