@@ -3,7 +3,8 @@
 	"package": "salverz.enhancedminecarts.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"MinecartModifier"
 	],
 	"injectors": {
 		"defaultRequire": 1
