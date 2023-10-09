@@ -15,37 +15,35 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Objects;
-
 @Mixin(AbstractMinecartEntity.class)
-public abstract class MinecartModifier {
+public abstract class AbstractMinecartEntityMixin {
 
     // Increases the max speed of minecarts
     @Inject(method = "getMaxSpeed", at = @At("RETURN"), cancellable = true)
     public void modifyMaxSpeed(CallbackInfoReturnable<Double> cir) {
         AbstractMinecartEntity minecart = (AbstractMinecartEntity) (Object) this;
-        System.out.println(minecart.getVelocity());
-//        minecart.setVelocity(new Vec3d());
-        cir.setReturnValue(20.0);
+        // m/s / 20
+        cir.setReturnValue(130.0 / 20);
     }
 
-    // Invokers for private/protected methods in moveOnRail()
-
     // Modification of the moveOnRail method to remove speed cap and modify derailment behavior
+
+    /*
+    * VARIABLES:
+    * bl -
+    *
+    *
+    * */
     @Inject(method = "moveOnRail", at = @At("HEAD"), cancellable = true)
     private void modifyMoveOnRail(BlockPos pos, BlockState state, CallbackInfo ci) {
         AbstractMinecartEntity minecart = (AbstractMinecartEntity) (Object) this;
         AbstractMinecartEntityInvoker minecartEntityInvoker = (AbstractMinecartEntityInvoker) minecart;
 
-        System.out.println("HIJACKING moveOnRail()");
         minecart.onLanding();
         double d = minecart.getX();
         double e = minecart.getY();
@@ -97,7 +95,8 @@ public abstract class MinecartModifier {
             i = -i;
         }
 
-        double l = Math.min(2.0, vec3d2.horizontalLength());
+        double l = vec3d2.horizontalLength();
+//        double l = Math.min(2.0, vec3d2.horizontalLength());
         vec3d2 = new Vec3d(l * h / j, vec3d2.y, l * i / j);
         minecart.setVelocity(vec3d2);
         Entity entity = minecart.getFirstPassenger();
@@ -106,11 +105,13 @@ public abstract class MinecartModifier {
             double m = vec3d3.horizontalLengthSquared();
             double n = minecart.getVelocity().horizontalLengthSquared();
             if (m > 1.0E-4 && n < 0.01) {
+                // Does not affect max speed
                 minecart.setVelocity(minecart.getVelocity().add(vec3d3.x * 0.1, 0.0, vec3d3.z * 0.1));
                 bl2 = false;
             }
         }
 
+        // Slowdown to a stop on a powered rail that is off
         double o;
         if (bl2) {
             o = minecart.getVelocity().horizontalLength();
@@ -163,6 +164,7 @@ public abstract class MinecartModifier {
             w = vec3d5.horizontalLength();
             if (w > 0.0) {
                 minecart.setVelocity(vec3d5.multiply((w + v) / w, 1.0, (w + v) / w));
+                System.out.println(minecart.getVelocity());
             }
 
             minecart.setPosition(minecart.getX(), vec3d4.y, minecart.getZ());
@@ -181,6 +183,7 @@ public abstract class MinecartModifier {
             w = vec3d5.horizontalLength();
             if (w > 0.01) {
                 double z = 0.06;
+                System.out.println(minecart.getVelocity());
                 minecart.setVelocity(vec3d5.add(vec3d5.x / w * 0.06, 0.0, vec3d5.z / w * 0.06));
             } else {
                 Vec3d vec3d6 = minecart.getVelocity();
