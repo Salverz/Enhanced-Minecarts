@@ -95,6 +95,7 @@ public abstract class AbstractMinecartEntityMixin {
             i = -i;
         }
 
+        // Remove the speed cap
         double l = vec3d2.horizontalLength();
 //        double l = Math.min(2.0, vec3d2.horizontalLength());
         vec3d2 = new Vec3d(l * h / j, vec3d2.y, l * i / j);
@@ -159,6 +160,7 @@ public abstract class AbstractMinecartEntityMixin {
         Vec3d vec3d5;
         double w;
         if (vec3d4 != null && vec3d != null) {
+            System.out.println("NO RAIL DETECTED ON MOVE");
             double v = (vec3d.y - vec3d4.y) * 0.05;
             vec3d5 = minecart.getVelocity();
             w = vec3d5.horizontalLength();
